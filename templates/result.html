@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>분석 결과</title>
+</head>
+<body>
+    <h1>감정 분석 결과</h1>
+    <p>주요 감정: <strong>{{ emotion }}</strong></p>
+    <ul>
+        {% for key, value in scores.items() %}
+            <li>{{ key }}: {{ value|round(2) }}%</li>
+        {% endfor %}
+    </ul>
+    <a href="/">다시 분석하기</a>
+</body>
+</html>
