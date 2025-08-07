@@ -1,7 +1,9 @@
-from flask import Flask, request, render_template
-import jinja2 
+
+from flask import Flask, request, render_template, url_for
+import jinja2
 from deepface import DeepFace
 import cv2  # 이미지 처리 (필요 시)
+import os
 
 app = Flask(__name__)
 
@@ -9,23 +11,38 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        # 업로드된 파일 가져오기
         file = request.files['file']
         if file:
-            # 파일 저장 (임시로 메모리에서 처리)
-            file_path = 'uploaded_image.jpg'
+            # static 폴더에 파일 저장
+            upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+            os.makedirs(upload_folder, exist_ok=True)
+            filename = 'uploaded_image.jpg'
+            file_path = os.path.join(upload_folder, filename)
             file.save(file_path)
-            
+
             # DeepFace로 감정 분석
-            analysis = DeepFace.analyze(img_path=file_path, actions=['emotion'])
-            
+            try:
+                analysis = DeepFace.analyze(img_path=file_path, actions=['emotion'])
+            except ValueError as e:
+                # 얼굴을 감지할 수 없는 경우 에러 페이지로 이동
+                if "Face could not be detected" in str(e):
+                    return render_template('error.html')
+                else:
+                    # 다른 ValueError의 경우 다시 발생시킴
+                    raise e
+
+
             # 결과 추출 (가장 강한 감정)
-            dominant_emotion = analysis[0]['dominant_emotion']
-            emotion_scores = analysis[0]['emotion']
-            
-            # 결과 반환
-            return render_template('result.html', emotion=dominant_emotion, scores=emotion_scores)
-    
+            if isinstance(analysis, list):
+                analysis = analysis[0]
+            dominant_emotion = analysis['dominant_emotion']
+            emotion_scores = analysis['emotion']
+
+            # 이미지 URL 생성
+            image_url = url_for('static', filename=f'uploads/{filename}')
+
+            return render_template('result.html', emotion=dominant_emotion, scores=emotion_scores, image_url=image_url)
+
     return render_template('index.html')
 
 if __name__ == '__main__':

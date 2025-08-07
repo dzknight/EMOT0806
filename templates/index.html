@@ -44,10 +44,111 @@
     </script>
 </head>
 <body>
-    <h1>사진 업로드하여 감정 분석</h1>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*">
-        <button type="submit">분석하기</button>
-    </form>
+    <!-- 헤더 -->
+    <header class="hero is-info is-small" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title has-text-white" style="font-weight:700; font-size:1.8em;">
+                    🤖 AI 감정 분석 시스템
+                </h1>
+                <h2 class="subtitle has-text-white-bis" style="font-size:1.1em;">
+                    첨단 딥러닝 기술로 얼굴 표정을 분석합니다
+                </h2>
+            </div>
+        </div>
+    </header>
+
+    <section class="section" style="min-height:70vh; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+        <div class="container">
+            <div class="box" style="max-width: 540px; margin: 0 auto; background: linear-gradient(135deg, #fffbe6 0%, #e3f0ff 100%); box-shadow: 0 8px 32px 0 rgba(31,38,135,0.15); border-radius: 18px; padding-bottom: 32px;">
+                <h1 class="title has-text-centered" style="font-weight:900; letter-spacing:1px; color:#3a3a3a; font-size:2.1em; margin-bottom:0.2em;">😊 얼굴 감정 분석</h1>
+                <p class="has-text-centered" style="color:#4A4A4A; margin-bottom:22px; font-size:1.15em; font-weight:500;">사진을 업로드하면 <span style="color:#3273DC; font-weight:700;">AI</span>가 감정을 분석해줍니다.</p>
+                <!-- 이미지 미리보기/안내 영역 -->
+                <div id="preview-area" class="has-text-centered" style="margin-bottom:20px;">
+                    <img id="img-preview" src="#" alt="미리보기" style="max-width:100%; max-height:250px; border-radius:14px; box-shadow:0 4px 16px #b5b5b5; display:none; transition: box-shadow 0.3s, transform 0.3s; cursor:pointer;" onmouseover="this.style.boxShadow='0 8px 32px #a3a3a3';this.style.transform='scale(1.05)';" onmouseout="this.style.boxShadow='0 4px 16px #b5b5b5';this.style.transform='scale(1)';" />
+                    <div id="preview-placeholder" style="color:#b5b5b5; font-size:1.1em;">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" style="margin-bottom:10px;">
+                            <circle cx="12" cy="12" r="10" fill="#f5f5f5"/>
+                            <path d="M7 16l2.5-3 2.5 3 3.5-5 4 6H5l2-3z" fill="#b5b5b5"/>
+                        </svg><br>
+                        이미지를 선택하면 미리보기가 여기에 표시됩니다.
+                    </div>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="field">
+                        <div class="file is-info is-fullwidth has-name" style="border-radius:8px;">
+                            <label class="file-label">
+                                <input class="file-input" type="file" name="file" accept="image/*" required>
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">이미지 선택</span>
+                                </span>
+                                <span class="file-name">이미지를 선택하세요</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="has-text-centered" style="margin-top:22px;">
+                        <button type="submit" class="button is-link is-medium is-fullwidth" style="font-weight:700; letter-spacing:1px; border-radius:8px; box-shadow:0 2px 8px #b5b5b5; transition: background 0.2s, box-shadow 0.2s;">분석하기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer" style="background: linear-gradient(135deg, #434343 0%, #000000 100%); padding: 2rem 1.5rem;">
+        <div class="content has-text-centered has-text-white">
+            <div class="columns is-mobile is-centered">
+                <div class="column is-narrow">
+                    <h3 class="title is-5 has-text-white" style="margin-bottom:1rem;">🧠 AI 감정 분석</h3>
+                    <p style="font-size:0.95em; color:#b5b5b5;">
+                        DeepFace 라이브러리를 활용한<br>
+                        고정밀 얼굴 감정 인식 서비스
+                    </p>
+                </div>
+            </div>
+            <hr style="background-color:#555; margin:1.5rem 0;">
+            <div class="level">
+                <div class="level-item">
+                    <div class="tags">
+                        <span class="tag is-dark">Flask</span>
+                        <span class="tag is-dark">DeepFace</span>
+                        <span class="tag is-dark">TensorFlow</span>
+                        <span class="tag is-dark">AI</span>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size:0.85em; color:#999;">
+                © 2025 AI 감정 분석 시스템. 모든 권리 보유.
+            </p>
+        </div>
+    </footer>
+    <script>
+        // Bulma file input 이름 표시 및 이미지 미리보기
+        document.querySelectorAll('.file-input').forEach(function(input) {
+            input.addEventListener('change', function() {
+                var fileName = input.files[0] ? input.files[0].name : '이미지를 선택하세요';
+                input.closest('.file').querySelector('.file-name').textContent = fileName;
+                var previewArea = document.getElementById('preview-area');
+                var previewImg = document.getElementById('img-preview');
+                var previewPlaceholder = document.getElementById('preview-placeholder');
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        previewImg.style.display = 'inline-block';
+                        previewPlaceholder.style.display = 'none';
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    previewImg.src = '#';
+                    previewImg.style.display = 'none';
+                    previewPlaceholder.style.display = 'block';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

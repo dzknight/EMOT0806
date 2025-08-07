@@ -27,13 +27,93 @@
     </style>
 </head>
 <body>
-    <h1>감정 분석 결과</h1>
-    <p>주요 감정: <strong>{{ emotion }}</strong></p>
-    <ul>
-        {% for key, value in scores.items() %}
-            <li>{{ key }}: {{ value|round(2) }}%</li>
-        {% endfor %}
-    </ul>
-    <a href="/">다시 분석하기</a>
+    <!-- 헤더 -->
+    <header class="hero is-info is-small" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title has-text-white" style="font-weight:700; font-size:1.8em;">
+                    🤖 AI 감정 분석 시스템
+                </h1>
+                <h2 class="subtitle has-text-white-bis" style="font-size:1.1em;">
+                    첨단 딥러닝 기술로 얼굴 표정을 분석합니다
+                </h2>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="box" style="max-width: 540px; margin: 0 auto; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); box-shadow: 0 8px 32px 0 rgba(31,38,135,0.15); border-radius: 18px; padding-bottom: 32px;">
+                <h1 class="title has-text-centered" style="font-weight:900; letter-spacing:1px; color:#3a3a3a;">감정 분석 결과</h1>
+                {% if image_url %}
+                <div class="has-text-centered" style="margin-bottom:22px;">
+                    <img src="{{ image_url }}" alt="업로드 이미지" style="max-width:100%; max-height:260px; border-radius:14px; box-shadow:0 4px 16px #b5b5b5; transition: transform 0.3s; cursor:pointer;" onclick="this.style.transform='scale(1.15)'; setTimeout(()=>{this.style.transform='scale(1)';}, 400);" />
+                </div>
+                {% endif %}
+                <div class="has-text-centered" style="margin-bottom:18px;">
+                    <span style="font-size:2.5em; vertical-align:middle; margin-right:10px;">
+                        {% if emotion == 'happy' %}😊{% elif emotion == 'sad' %}😢{% elif emotion == 'angry' %}😠{% elif emotion == 'surprise' %}😲{% elif emotion == 'fear' %}😨{% elif emotion == 'disgust' %}🤢{% elif emotion == 'neutral' %}😐{% else %}🙂{% endif %}
+                    </span>
+                    <span style="font-size:1.3em; font-weight:700; color:
+                        {% if emotion == 'happy' %}#ffb300{% elif emotion == 'sad' %}#4a90e2{% elif emotion == 'angry' %}#e74c3c{% elif emotion == 'surprise' %}#9b59b6{% elif emotion == 'fear' %}#34495e{% elif emotion == 'disgust' %}#27ae60{% elif emotion == 'neutral' %}#7f8c8d{% else %}#3273DC{% endif %};">
+                        주요 감정: <strong>{{ emotion }}</strong>
+                    </span>
+                </div>
+                <div class="has-text-centered" style="margin-bottom:18px;">
+                    <span style="font-size:1.1em; color:#888;">
+                        {% if emotion == 'happy' %}행복은 긍정적인 에너지와 미소를 의미합니다.{% elif emotion == 'sad' %}슬픔은 위로와 공감이 필요한 감정입니다.{% elif emotion == 'angry' %}분노는 스트레스와 긴장감을 나타냅니다.{% elif emotion == 'surprise' %}놀람은 예상치 못한 상황에 대한 반응입니다.{% elif emotion == 'fear' %}두려움은 불안과 경계심을 의미합니다.{% elif emotion == 'disgust' %}혐오는 불쾌함과 거부감을 나타냅니다.{% elif emotion == 'neutral' %}중립은 감정의 변화가 적은 상태입니다.{% else %}감정 분석 결과를 확인하세요!{% endif %}
+                    </span>
+                </div>
+                <div class="card" style="box-shadow:0 2px 12px #e0e0e0; border-radius:12px;">
+                    <div class="card-content">
+                        <ul>
+                            {% for key, value in scores.items() %}
+                                <li style="margin-bottom:10px;">
+                                    <span class="tag is-medium" style="font-size:1.08em; min-width:90px; display:inline-block; background:
+                                        {% if key == 'happy' %}linear-gradient(90deg,#ffe082,#ffd54f){% elif key == 'sad' %}linear-gradient(90deg,#b3c6f7,#4a90e2){% elif key == 'angry' %}linear-gradient(90deg,#ffb3b3,#e74c3c){% elif key == 'surprise' %}linear-gradient(90deg,#e1bee7,#9b59b6){% elif key == 'fear' %}linear-gradient(90deg,#b2bec3,#34495e){% elif key == 'disgust' %}linear-gradient(90deg,#b2f7c6,#27ae60){% elif key == 'neutral' %}linear-gradient(90deg,#ececec,#7f8c8d){% else %}#f0f0f0{% endif %}; color:#222; border-radius:8px;">
+                                        {% if key == 'happy' %}😊{% elif key == 'sad' %}😢{% elif key == 'angry' %}😠{% elif key == 'surprise' %}😲{% elif key == 'fear' %}😨{% elif key == 'disgust' %}🤢{% elif key == 'neutral' %}😐{% else %}🙂{% endif %}
+                                        {{ key }}
+                                    </span>
+                                    <span style="font-weight:bold; margin-left:10px; color:#363636; font-size:1.08em;">{{ value|round(2) }}%</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="has-text-centered" style="margin-top: 28px;">
+                    <a href="/" class="button is-link is-light is-medium" style="box-shadow:0 2px 8px #b5b5b5; border-radius:8px;">다시 분석하기</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer" style="background: linear-gradient(135deg, #434343 0%, #000000 100%); padding: 2rem 1.5rem;">
+        <div class="content has-text-centered has-text-white">
+            <div class="columns is-mobile is-centered">
+                <div class="column is-narrow">
+                    <h3 class="title is-5 has-text-white" style="margin-bottom:1rem;">🧠 AI 감정 분석</h3>
+                    <p style="font-size:0.95em; color:#b5b5b5;">
+                        DeepFace 라이브러리를 활용한<br>
+                        고정밀 얼굴 감정 인식 서비스
+                    </p>
+                </div>
+            </div>
+            <hr style="background-color:#555; margin:1.5rem 0;">
+            <div class="level">
+                <div class="level-item">
+                    <div class="tags">
+                        <span class="tag is-dark">Flask</span>
+                        <span class="tag is-dark">DeepFace</span>
+                        <span class="tag is-dark">TensorFlow</span>
+                        <span class="tag is-dark">AI</span>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size:0.85em; color:#999;">
+                © 2025 AI 감정 분석 시스템. 모든 권리 보유.
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
