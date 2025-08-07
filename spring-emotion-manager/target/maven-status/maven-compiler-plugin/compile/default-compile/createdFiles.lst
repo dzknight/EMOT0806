@@ -1,0 +1,6 @@
+com\emotion\manager\controller\EmotionController.class
+com\emotion\manager\EmotionManagerApplication.class
+com\emotion\manager\controller\EmotionRestController.class
+com\emotion\manager\SimpleTestApplication.class
+com\emotion\manager\entity\EmotionResult.class
+com\emotion\manager\repository\EmotionResultRepository.class

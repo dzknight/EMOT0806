@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>감정 분석 관리 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .emotion-card {
+            transition: transform 0.2s;
+        }
+        .emotion-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">🤖 감정 분석 관리 시스템</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="/">대시보드</a>
+                <a class="nav-link" href="/results">분석 결과</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <h2 th:text="${totalCount}">0</h2>
+                        <p>총 분석 수</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>감정별 통계</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="emotionChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>최근 분석 결과</h5>
+                        <a href="/results" class="btn btn-sm btn-outline-primary">전체 보기</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>분석 시간</th>
+                                        <th>주요 감정</th>
+                                        <th>이미지</th>
+                                        <th>상세</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="result : ${recentResults}" th:if="${resultStat.index < 10}">
+                                        <td th:text="${result.id}"></td>
+                                        <td th:text="${#temporals.format(result.analysisTime, 'yyyy-MM-dd HH:mm')}"></td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${result.dominantEmotion == 'happy'} ? 'bg-warning' : 
+                                                                 ${result.dominantEmotion == 'sad'} ? 'bg-info' : 
+                                                                 ${result.dominantEmotion == 'angry'} ? 'bg-danger' : 
+                                                                 ${result.dominantEmotion == 'surprise'} ? 'bg-primary' : 
+                                                                 ${result.dominantEmotion == 'fear'} ? 'bg-dark' : 
+                                                                 ${result.dominantEmotion == 'disgust'} ? 'bg-success' : 'bg-secondary'"
+                                                  th:text="${result.dominantEmotion}"></span>
+                                        </td>
+                                        <td th:text="${result.imageFilename}"></td>
+                                        <td>
+                                            <a th:href="@{/result/{id}(id=${result.id})}" class="btn btn-sm btn-outline-info">상세</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // 감정별 통계 차트
+        const statistics = /*[[${statistics}]]*/ [];
+        const labels = statistics.map(stat => stat[0]);
+        const data = statistics.map(stat => stat[1]);
+        
+        const ctx = document.getElementById('emotionChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        '#FFD700', '#87CEEB', '#FF6B6B', '#DDA0DD', 
+                        '#708090', '#98FB98', '#D3D3D3'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
